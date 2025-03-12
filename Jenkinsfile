@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('VM Node Version') {
+        stage('VM NodeJs Version') {
             steps {
                 sh '''
                     node -v
