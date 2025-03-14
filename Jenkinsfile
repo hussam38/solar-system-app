@@ -30,7 +30,7 @@ pipeline {
                             --out \'./\'
                             --format \'ALL\'
                             --prettyPrint''',
-                            nvdCredentialsId: 'NVD_API_KEY',
+                            // nvdCredentialsId: 'NVD_API_KEY',
                             odcInstallation: 'OWASP-DEPENDENCY-10'
                     }
                 }
