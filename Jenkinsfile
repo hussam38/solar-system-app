@@ -8,11 +8,16 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
+                sh 'npm install --no-audit'
+            }
+        }
+
+        stage('NPM Dependency Audit') {
+            steps {
                 sh '''
-                    npm -v
-                    node -v
+                    npm audit --audit-level=critical
+                    echo $?
                 '''
-                //sh 'npm install --no-audit'
             }
         }
     }
