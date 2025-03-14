@@ -20,5 +20,17 @@ pipeline {
                 '''
             }
         }
+
+        stage('OWASP Dependency CHECK') {
+            steps {
+                dependencyCheck additionalArguments: '''
+                    --scan \'./\'
+                    --out \'./\'
+                    --format \'ALL\'
+                    --prettyprint''',
+                    nvdCredentialsId: 'NVD_API_KEY',
+                    odcInstallation: 'OWASP-DEPENDENCY-10'
+            }
+        }
     }
 }
