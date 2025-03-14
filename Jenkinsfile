@@ -29,7 +29,7 @@ pipeline {
                             --scan \'./\'
                             --out \'./\'
                             --format \'ALL\'
-                            --prettyprint''',
+                            --prettyPrint''',
                             nvdCredentialsId: 'NVD_API_KEY',
                             odcInstallation: 'OWASP-DEPENDENCY-10'
                     }
