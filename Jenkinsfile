@@ -27,7 +27,7 @@ pipeline {
                 //     sh 'npm test'
                 // }
                 sh 'npm test'
-                junit allowEmptyResults: true, testResults: 'test-results.xml'
+                // junit allowEmptyResults: true, testResults: 'test-results.xml'
             }
         }
     }
