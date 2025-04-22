@@ -14,9 +14,10 @@
     "lines": 90
   },
   "dependencies": {
+    "@babel/traverse": "^7.23.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mongoose": "5.13.20",
+    "mongoose": "^8.13.2",
     "nyc": "^15.1.0",
     "serverless-http": "^3.2.0"
   },

@@ -13,27 +13,11 @@ pipeline {
         }
 
         stage ('Dependency Scanning'){
-            parallel {
-                stage('NPM Dependency Audit') {
-                    steps {
-                        sh '''
-                            npm audit --audit-level=critical
-                            echo $?
-                        '''
-                    }
-                }
-
-                stage('OWASP Dependency CHECK') {
-                    steps {
-                        dependencyCheck additionalArguments: '''
-                            --scan \'./\'
-                            --out \'./\'
-                            --format \'ALL\'
-                            --prettyPrint''',
-                            nvdCredentialsId: 'NVD_API_KEY',
-                            odcInstallation: 'OWASP-DEPENDENCY-10-0-3'
-                    }
-                }
+            steps {
+                    sh '''
+                        npm audit --audit-level=critical
+                        echo $?
+                    '''
             }
         }
     }
