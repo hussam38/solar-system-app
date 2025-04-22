@@ -19,7 +19,8 @@ app.use(cors());
 const DB_HOST = "localhost";
 const DB_PORT = "27017";
 
-const URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PAASWD}@${DB_HOST}:${DB_PORT}?authSource=admin`;
+const URI = `mongodb://root:example@${DB_HOST}:${DB_PORT}?authSource=admin`;
+// const URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PAASWD}@${DB_HOST}:${DB_PORT}?authSource=admin`;
 
 async function connectToMongo() {
   try {
