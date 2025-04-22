@@ -23,7 +23,7 @@ const URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PAASWD}@${D
 
 async function connectToMongo() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(URI);
     console.log("MongoDB Connection Successful");
   } catch (err) {
     console.log("MongoDB Connection Error:", err);

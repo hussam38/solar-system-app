@@ -5,10 +5,6 @@ pipeline {
         nodejs 'NodeJs-23-9-0'
     }
 
-    environment {
-        MONGO_URI = 'mongodb://${DB_USER}:${DB_PAASWD}@${DB_HOST}:${DB_PORT}?authSource=admin'
-    }
-
     stages {
         stage('Install Dependencies') {
             steps {
