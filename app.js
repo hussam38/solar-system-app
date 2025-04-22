@@ -17,26 +17,21 @@ app.use(cors());
 //process.env.MONGO_PASSWORD = SuperPassword
 
 const DB_HOST = "localhost";
-const DB_PAASWD = "example";
-const DB_USER = "root";
 const DB_PORT = "27017";
 
-const URI = `mongodb://${DB_USER}:${DB_PAASWD}@${DB_HOST}:${DB_PORT}/?authSource=admin`;
+const URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PAASWD}@${DB_HOST}:${DB_PORT}?authSource=admin`;
 
-mongoose.connect(
-  URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  function (err) {
-    if (err) {
-      console.log("error!! " + err);
-    } else {
-        console.log("MongoDB Connection Successful")
-    }
+async function connectToMongo() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB Connection Successful");
+  } catch (err) {
+    console.log("MongoDB Connection Error:", err);
   }
-);
+}
+
+connectToMongo();
+
 
 var Schema = mongoose.Schema;
 
@@ -50,24 +45,17 @@ var dataSchema = new Schema({
 });
 var planetModel = mongoose.model("planets", dataSchema);
 
-app.post("/planet", function (req, res) {
+app.post("/planet", async function (req, res) {
   // console.log("Received Planet ID " + req.body.id)
-  planetModel.findOne(
-    {
-      id: req.body.id,
-    },
-    function (err, planetData) {
-      if (err) {
-        alert(
-          "Ooops, We only have 9 planets and a sun. Select a number from 0 - 9"
-        );
-        res.send("Error in Planet Data");
-      } else {
-        res.send(planetData);
-      }
-    }
-  );
+  try {
+    const planetData = await planetModel.findOne({ id: req.body.id });
+    res.send(planetData);
+  } catch (err) {
+    console.error("Ooops, We only have 9 planets and a sun. Select a number from 0 - 9");
+    res.send("Error in Planet Data");
+  }
 });
+
 
 app.get("/", async (req, res) => {
   res.sendFile(path.join(__dirname, "/", "index.html"));
