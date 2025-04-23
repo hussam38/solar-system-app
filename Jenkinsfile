@@ -35,7 +35,7 @@ pipeline {
     }
 
     post {
-        success {
+        always {
             junit allowEmptyResults: true, testResults: 'test-results.xml'
         }
     }
