@@ -12,16 +12,15 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "/")));
 app.use(cors());
 
-//process.env.MONGO_URI = mongodb+srv://supercluster-d83jj.mongodb.net/superdata
-//process.env.MONGO_USERNAME = superuser
-//process.env.MONGO_PASSWORD = SuperPassword
+// process.env.MONGO_URI = 'mongodb+srv://supercluster-d83jj.mongodb.net/superdata'
+// process.env.MONGO_USERNAME = superuser
+// process.env.MONGO_PASSWORD = SuperPassword
 
 const DB_HOST = "localhost";
 const DB_PORT = "27017";
 
-const URI = `mongodb://root:example@${DB_HOST}:${DB_PORT}?authSource=admin`;
-// const URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PAASWD}@${DB_HOST}:${DB_PORT}?authSource=admin`;
-
+// const URI1 = `mongodb://root:example@${DB_HOST}:${DB_PORT}?authSource=admin`;
+const URI = 'mongodb+srv://superuser:superuser@cluster0.vi2k4tr.mongodb.net/planets?retryWrites=true&w=majority'
 async function connectToMongo() {
   try {
     await mongoose.connect(URI);
@@ -46,16 +45,46 @@ var dataSchema = new Schema({
 });
 var planetModel = mongoose.model("planets", dataSchema);
 
+// app.post("/planet", async function (req, res) {
+//   try {
+//     const planetData = await planetModel.findOne({ id: req.body.id });
+
+//     if (!planetData) {
+//       return res.status(404).send({ message: "Planet not found" });
+//     }
+
+//     res.send(planetData);
+//   } catch (err) {
+//     console.error("Error in Planet Data:", err);
+//     res.status(500).send({ message: "Error fetching planet data" });
+//   }
+// });
+
+
+
+
 app.post("/planet", async function (req, res) {
-  // console.log("Received Planet ID " + req.body.id)
+  const { id } = req.body;
+  
+  // Validate id in request body
+  if (!id || typeof id !== 'number') {
+    return res.status(400).send({ message: "Invalid planet ID" });
+  }
+
   try {
-    const planetData = await planetModel.findOne({ id: req.body.id });
+    const planetData = await planetModel.findOne({ id });
+
+    if (!planetData) {
+      return res.status(404).send({ message: "Planet not found" });
+    }
+
     res.send(planetData);
   } catch (err) {
-    console.error("Ooops, We only have 9 planets and a sun. Select a number from 0 - 9");
-    res.send("Error in Planet Data");
+    console.error("Error in Planet Data:", err);
+    res.status(500).send({ message: "Error fetching planet data" });
   }
 });
+
 
 
 app.get("/", async (req, res) => {
