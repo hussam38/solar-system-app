@@ -5,6 +5,12 @@ pipeline {
         nodejs 'NodeJs-23-9-0'
     }
 
+    environment {
+        MONGO_URI = 'mongodb+srv://cluster0.vi2k4tr.mongodb.net/planets?retryWrites=true&w=majority'
+        MONGO_USERNAME = credentials('mongo-db-username')
+        MONGO_PASSWD = credentials('mongo-db-passwd')
+    }
+
     stages {
         stage('Install Dependencies') {
             steps {
@@ -23,12 +29,15 @@ pipeline {
 
         stage('Unit Testing') {
             steps {
-                // withCredentials([usernamePassword(credentialsId: 'mongo-db-crds', passwordVariable: 'MONGO_PASSWD', usernameVariable: 'MONGO_USER')]) {
-                //     sh 'npm test'
-                // }
                 sh 'npm test'
-                junit allowEmptyResults: true, testResults: 'test-results.xml'
             }
         }
     }
+
+    post {
+        success {
+            junit allowEmptyResults: true, testResults: 'test-results.xml'
+        }
+    }
+
 }

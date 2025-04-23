@@ -12,18 +12,12 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "/")));
 app.use(cors());
 
-// process.env.MONGO_URI = 'mongodb+srv://supercluster-d83jj.mongodb.net/superdata'
-// process.env.MONGO_USERNAME = superuser
-// process.env.MONGO_PASSWORD = SuperPassword
-
-const DB_HOST = "localhost";
-const DB_PORT = "27017";
-
-// const URI1 = `mongodb://root:example@${DB_HOST}:${DB_PORT}?authSource=admin`;
-const URI = 'mongodb+srv://superuser:superuser@cluster0.vi2k4tr.mongodb.net/planets?retryWrites=true&w=majority'
 async function connectToMongo() {
   try {
-    await mongoose.connect(URI);
+    await mongoose.connect(process.env.MONGO_URI, {
+      user: process.env.MONGO_USERNAME,
+      pass: process.env.MONGO_PASSWD,
+    });
     console.log("MongoDB Connection Successful");
   } catch (err) {
     console.log("MongoDB Connection Error:", err);
