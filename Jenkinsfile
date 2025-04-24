@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        MONGO_URI = 'mongodb+srv://cluster0.iff7ofz.mongodb.net/?retryWrites=true&w=majority'
+        MONGO_URI = 'mongodb+srv://cluster0.iff7ofz.mongodb.net/planets?retryWrites=true&w=majority'
         MONGO_USERNAME = credentials('mongo-db-username')
         MONGO_PASSWD = credentials('mongo-db-passwd')
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner-710'
