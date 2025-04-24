@@ -17,9 +17,9 @@ async function connectToMongo() {
       user: process.env.MONGO_USERNAME,
        pass: process.env.MONGO_PASSWD,
      });
-    console.log("MongoDB Connection Successful");
+    console.log("MongoDB Atlas Connection Successful");
   } catch (err) {
-    console.log("MongoDB Connection Error:", err);
+    console.log("MongoDB Atlas Connection Error:", err);
   }
 }
 
