@@ -73,14 +73,14 @@ pipeline {
                         --exit-code 0 \
                         --format json \
                         --quiet \
-                        --output trivy-MEDIUM-report.json
+                        -o trivy-MEDIUM-report.json
 
                     trivy image hussam146/solar-system:$GIT_COMMIT \
                         --severity HIGH,CRITICAL \
                         --exit-code 1 \
                         --format json \
                         --quiet \
-                        --output trivy-CRITICAL-report.json
+                        -o trivy-CRITICAL-report.json
                 '''
             }
             post {
