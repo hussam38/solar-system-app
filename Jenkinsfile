@@ -106,9 +106,9 @@ pipeline {
 
     post {
         always {
-            junit allowEmptyResults: true, stdioRetentoin: '', testResults: 'test-results.xml'
-            junit allowEmptyResults: true, stdioRetentoin: '', testResults: 'trivy-MEDIUM-report.xml'
-            junit allowEmptyResults: true, stdioRetentoin: '', testResults: 'trivy-CRITICAL-report.xml'
+            junit allowEmptyResults: true, studioRetentoin: '', testResults: 'test-results.xml'
+            junit allowEmptyResults: true, studioRetentoin: '', testResults: 'trivy-MEDIUM-report.xml'
+            junit allowEmptyResults: true, studioRetentoin: '', testResults: 'trivy-CRITICAL-report.xml'
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
