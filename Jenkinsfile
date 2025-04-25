@@ -148,10 +148,10 @@ pipeline {
                                 fi
                                 echo "Running Docker script..."
                                 sudo docker pull ${IMAGE_NAME}:${IMAGE_TAG}
-                                if sudo docker ps -a | grep -q 'solar-system'; then
+                                 if sudo docker ps -a --format "{{.Names}}" | grep -q "^solar-system\$"; then
                                     echo "Container already exists, removing..."
-                                    sudo docker stop solar-system
-                                    sudo docker rm solar-system
+                                    sudo docker stop solar-system || true
+                                    sudo docker rm solar-system || true
                                     echo "Container removed."
                                 fi
                                 sudo docker run -d --name solar-system \\
