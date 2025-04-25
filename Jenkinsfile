@@ -154,11 +154,11 @@ pipeline {
                                     sudo docker rm solar-system
                                     echo "Container removed."
                                 fi
-                                sudo docker run -d --name solar-system \
-                                    -e MONGO_URI=${MONGO_URI} \
-                                    -e MONGO_USERNAME=${MONGO_USERNAME} \
-                                    -e MONGO_PASSWD=${MONGO_PASSWD} \
-                                    -p 3000:3000 \
+                                sudo docker run -d --name solar-system \\
+                                    -e MONGO_URI=${MONGO_URI} \\
+                                    -e MONGO_USERNAME=${MONGO_USERNAME} \\
+                                    -e MONGO_PASSWD=${MONGO_PASSWD} \\
+                                    -p 3000:3000 \\
                                     ${IMAGE_NAME}:${IMAGE_TAG}
                             "
                         """
