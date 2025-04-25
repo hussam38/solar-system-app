@@ -9,6 +9,8 @@ pipeline {
         MONGO_URI = 'mongodb+srv://cluster0.iff7ofz.mongodb.net/planets?retryWrites=true&w=majority'
         MONGO_USERNAME = credentials('mongo-db-username')
         MONGO_PASSWD = credentials('mongo-db-passwd')
+        EC2_HOST = credentials('ec2-host')
+        SSH_USER = 'ubuntu'
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner-710'
         IMAGE_NAME = 'hussam146/solar-system'
         IMAGE_TAG = "${env.GIT_COMMIT}"
@@ -125,6 +127,47 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to AWS'){
+            when {
+                branch 'feature/*'
+            }
+            steps {
+                script {
+                    sshagent(['aws-ec2']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_HOST} "
+                                if ! command -v docker &> /dev/null; then
+                                    echo 'Docker could not be found, installing...'
+                                    sudo apt-get install -y docker.io
+                                    sudo systemctl start docker
+                                    sudo usermod -aG docker ${SSH_USER}
+                                    echo "Docker installed."
+                                else
+                                    echo "Docker is already installed."
+                                fi
+                                echo "Running Docker script..."
+                                docker pull ${IMAGE_NAME}:${IMAGE_TAG}
+                                if sudo docker ps -a | grep -q 'solar-system'; then
+                                    echo "Container already exists, removing..."
+                                    sudo docker stop solar-system
+                                    sudo docker rm solar-system
+                                    echo "Container removed."
+                                fi
+                                docker run -d --name solar-system \
+                                    -e MONGO_URI=${MONGO_URI} \
+                                    -e MONGO_USERNAME=${MONGO_USERNAME} \
+                                    -e MONGO_PASSWD=${MONGO_PASSWD} \
+                                    -p 3000:3000 \
+                                    ${IMAGE_NAME}:${IMAGE_TAG}
+                            "
+                        """
+                    }
+                }
+                
+            }
+        }
+
     }
 
     post {
@@ -153,5 +196,4 @@ pipeline {
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
-
 }
