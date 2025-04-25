@@ -158,7 +158,7 @@ pipeline {
                                     -e "MONGO_URI=${MONGO_URI}" \\
                                     -e "MONGO_USERNAME=${MONGO_USERNAME}" \\
                                     -e "MONGO_PASSWD=${MONGO_PASSWD}" \\
-                                    -p 3000:3000 \\
+                                    -p 4000:4000 \\
                                     ${IMAGE_NAME}:${IMAGE_TAG}
                             '
                         """
