@@ -136,7 +136,7 @@ pipeline {
                 script {
                     sshagent(['aws-ec2']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_HOST} "
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_HOST} '
                                 if ! command -v docker &> /dev/null; then
                                     echo 'Docker could not be found, installing...'
                                     sudo apt-get install -y docker.io
@@ -155,12 +155,12 @@ pipeline {
                                     echo "Container removed."
                                 fi
                                 sudo docker run -d --name solar-system \\
-                                    -e MONGO_URI=${MONGO_URI} \\
-                                    -e MONGO_USERNAME=${MONGO_USERNAME} \\
-                                    -e MONGO_PASSWD=${MONGO_PASSWD} \\
+                                    -e "MONGO_URI=${MONGO_URI}" \\
+                                    -e "MONGO_USERNAME=${MONGO_USERNAME}" \\
+                                    -e "MONGO_PASSWD=${MONGO_PASSWD}" \\
                                     -p 3000:3000 \\
                                     ${IMAGE_NAME}:${IMAGE_TAG}
-                            "
+                            '
                         """
                     }
                 }
