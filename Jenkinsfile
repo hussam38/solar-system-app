@@ -106,9 +106,25 @@ pipeline {
 
     post {
         always {
-            junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
-            junit allowEmptyResults: true, stdioRetention: '', testResults: 'trivy-MEDIUM-report.xml'
-            junit allowEmptyResults: true, stdioRetention: '', testResults: 'trivy-CRITICAL-report.xml'
+            script {
+                if(fileExists('test-results.xml')) {
+                    junit allowEmptyResults: true, testResults: 'test-results.xml'
+                }else {
+                    echo "No test-results.xml found, skipping."
+                }
+
+                if(fileExists('trivy-MEDIUM-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-MEDIUM-report.xml'
+                }else {
+                    echo "No trivy-MEDIUM-report.xml found, skipping."
+                }
+
+                if(fileExists('trivy-CRITICAL-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-CRITICAL-report.xml'
+                }else {
+                    echo "No trivy-CRITICAL-report.xml found, skipping."
+                }
+            }
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
