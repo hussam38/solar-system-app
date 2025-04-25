@@ -71,8 +71,8 @@ pipeline {
             steps {
                 sh """
                     docker image ls ${IMAGE_NAME} --format "{{.Repository}}:{{.Tag}} {{.ID}}" | \
-                    grep -v ":${IMAGE_TAG}" | \ 
-                    awk '{print \$2}' | \
+                    grep -v ":${IMAGE_TAG}" |\
+                    awk '{print \$2}' |\
                     xargs -r docker rmi -f
                 """
             }
