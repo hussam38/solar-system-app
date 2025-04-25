@@ -88,16 +88,16 @@ pipeline {
                     sh '''
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-MEDIUM-report.xml trivy-MEDIUM-report.json 
+                            -o trivy-MEDIUM-IMAGE-report.xml trivy-MEDIUM-report.json 
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-CRITICAL-report.xml trivy-CRITICAL-report.json
+                            -o trivy-CRITICAL-IMAGE-report.xml trivy-CRITICAL-report.json
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-MEDIUM-report.html trivy-MEDIUM-report.json
+                            -o trivy-MEDIUM-IMAGE-report.html trivy-MEDIUM-report.json
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-CRITICAL-report.html trivy-CRITICAL-report.json                        
+                            -o trivy-CRITICAL-IMAGE-report.html trivy-CRITICAL-report.json                        
                     '''
                 }
             }
@@ -113,20 +113,20 @@ pipeline {
                     echo "No test-results.xml found, skipping."
                 }
 
-                if(fileExists('trivy-MEDIUM-report.xml')) {
-                    junit allowEmptyResults: true, testResults: 'trivy-MEDIUM-report.xml'
+                if(fileExists('trivy-MEDIUM-IMAGE-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-MEDIUM-IMAGE-report.xml'
                 }else {
-                    echo "No trivy-MEDIUM-report.xml found, skipping."
+                    echo "No trivy-MEDIUM-IMAGE-report.xml found, skipping."
                 }
 
-                if(fileExists('trivy-CRITICAL-report.xml')) {
-                    junit allowEmptyResults: true, testResults: 'trivy-CRITICAL-report.xml'
+                if(fileExists('trivy-CRITICAL-IMAGE-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-CRITICAL-IMAGE-report.xml'
                 }else {
-                    echo "No trivy-CRITICAL-report.xml found, skipping."
+                    echo "No trivy-CRITICAL-IMAGE-report.xml found, skipping."
                 }
             }
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-IMAGE-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
