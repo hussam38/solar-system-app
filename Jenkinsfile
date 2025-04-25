@@ -10,6 +10,8 @@ pipeline {
         MONGO_USERNAME = credentials('mongo-db-username')
         MONGO_PASSWD = credentials('mongo-db-passwd')
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner-710'
+        IMAGE_NAME = 'hussam146/solar-system'
+        IMAGE_TAG = "${env.GIT_COMMIT}"
     }
 
     stages {
@@ -61,27 +63,38 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t hussam146/solar-system:$GIT_COMMIT .'
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('Cleaning Old Images'){
+            steps {
+                sh """
+                    docker image ls ${IMAGE_NAME} --format "{{.Repository}}:{{.Tag}} {{.ID}}" | \
+                    grep -v ":${IMAGE_TAG}" | \ 
+                    awk '{print \$2}' | \
+                    xargs -r docker rmi -f
+                """
             }
         }
 
         stage('Trivy Vulnerability Scanner') {
             steps {
-                sh '''
-                    trivy image hussam146/solar-system:$GIT_COMMIT \
+                sh """
+                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
                         --severity LOW,MEDIUM,HIGH \
                         --exit-code 0 \
                         --format json \
                         --quiet \
                         -o trivy-MEDIUM-report.json
 
-                    trivy image hussam146/solar-system:$GIT_COMMIT \
+                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
                         --severity CRITICAL \
                         --exit-code 1 \
                         --format json \
                         --quiet \
                         -o trivy-CRITICAL-report.json
-                '''
+                """
             }
             post {
                 always {
@@ -99,6 +112,16 @@ pipeline {
                             --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
                             -o trivy-CRITICAL-IMAGE-report.html trivy-CRITICAL-report.json                        
                     '''
+                }
+            }
+        }
+
+        stage('Push Image to Docker Registery'){
+            steps {
+                withDockerRegistry(credentialsId: 'docker-crds', url: ""){
+                    script {
+                        docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
+                    }
                 }
             }
         }
