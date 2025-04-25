@@ -147,14 +147,14 @@ pipeline {
                                     echo "Docker is already installed."
                                 fi
                                 echo "Running Docker script..."
-                                docker pull ${IMAGE_NAME}:${IMAGE_TAG}
+                                sudo docker pull ${IMAGE_NAME}:${IMAGE_TAG}
                                 if sudo docker ps -a | grep -q 'solar-system'; then
                                     echo "Container already exists, removing..."
                                     sudo docker stop solar-system
                                     sudo docker rm solar-system
                                     echo "Container removed."
                                 fi
-                                docker run -d --name solar-system \
+                                sudo docker run -d --name solar-system \
                                     -e MONGO_URI=${MONGO_URI} \
                                     -e MONGO_USERNAME=${MONGO_USERNAME} \
                                     -e MONGO_PASSWD=${MONGO_PASSWD} \
