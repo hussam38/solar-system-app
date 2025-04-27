@@ -13,15 +13,9 @@ app.use(express.static(path.join(__dirname, "/")));
 app.use(cors());
 async function connectToMongo() {
   try {
-    /*
     await mongoose.connect(process.env.MONGO_URI, {
       user: process.env.MONGO_USERNAME,
       pass: process.env.MONGO_PASSWD,
-     });
-     */
-     await mongoose.connect('mongodb+srv://cluster0.iff7ofz.mongodb.net/planets?retryWrites=true&w=majority', {
-      user: 'superuser',
-      pass: 'superuser',
      });
     console.log("MongoDB Atlas Connection Successful");
   } catch (err) {
