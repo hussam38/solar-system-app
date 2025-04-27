@@ -154,6 +154,10 @@ pipeline {
                                     sudo docker rm solar-system || true
                                     echo "Container removed."
                                 fi
+                                sudo docker image ls ${IMAGE_NAME} --format "{{.Repository}}:{{.Tag}} {{.ID}}" | \
+                                    grep -v ":${IMAGE_TAG}" |\
+                                    awk '{print \$2}' |\
+                                    xargs -r docker rmi -f
                                 sudo docker run -d --name solar-system \\
                                     -e "MONGO_URI=${MONGO_URI}" \\
                                     -e "MONGO_USERNAME=${MONGO_USERNAME}" \\
