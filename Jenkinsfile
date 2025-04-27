@@ -154,10 +154,14 @@ pipeline {
                                     sudo docker rm solar-system || true
                                     echo "Container removed."
                                 fi
-                                sudo docker image ls ${IMAGE_NAME} --format "{{.Repository}}:{{.Tag}} {{.ID}}" | \
-                                    grep -v ":${IMAGE_TAG}" |\
-                                    awk '{print \$2}' |\
-                                    xargs -r docker rmi -f
+                                IMAGES_TO_DELETE=\$(sudo docker images ${IMAGE_NAME} --format "{{.Repository}}:{{.Tag}}" | grep -v "${IMAGE_TAG}")
+                                if [ -n "\$IMAGES_TO_DELETE" ]; then
+                                    for image in \$IMAGES_TO_DELETE; do
+                                        sudo docker rmi -f "\$image" || true
+                                    done
+                                else
+                                    echo "No old images to delete."
+                                fi
                                 sudo docker run -d --name solar-system \\
                                     -e "MONGO_URI=${MONGO_URI}" \\
                                     -e "MONGO_USERNAME=${MONGO_USERNAME}" \\
