@@ -227,11 +227,11 @@ pipeline {
 
     post {
         always {
-
-            if(fileExists('kuberbetes')){
-                sh 'rm -rf kubernetes'
-            }
             script {
+                if(fileExists('kuberbetes')){
+                    sh 'rm -rf kubernetes'
+                }
+                
                 if(fileExists('test-results.xml')) {
                     junit allowEmptyResults: true, testResults: 'test-results.xml'
                 }else {
