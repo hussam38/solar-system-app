@@ -130,7 +130,7 @@ pipeline {
 
         stage('Deploy to AWS'){
             when {
-                expression {env.BRANCH_NAME.startsWith('feature/')}
+                branch 'feature/*'
             }
             steps {
                 script {
