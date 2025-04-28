@@ -176,6 +176,54 @@ pipeline {
                 
             }
         }
+
+        stage('Update Kubernetes') {
+            when {
+                branch 'PR*'
+            }
+            steps {
+                script {
+                    if (fileExists('kubernetes')){
+                        echo "Directory exists, proceeding with git operations."
+                        dir('kubernetes') {
+                            try {
+                                sh 'git pull origin main'
+                                echo "Git pull successful."
+                            }catch(err){
+                                echo "Pull failed. ${err}"
+                                echo "Deleting 'kubernetes' folder and recloning..."
+                                dir('..'){
+                                    dir('kubernetes'){
+                                        deleteDir()
+                                        echo "Directory deleted."
+                                    }
+                                }
+                                git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
+                            }
+                        }
+                    }else{
+                        echo "Directory not found. Cloning repository..."
+                        git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
+                    }
+                }
+                
+                script {
+                    dir('kubernetes') {
+                        sh """
+                            git checkout main
+                            git checkout -b feature-$BUILD_ID
+                            sed -i "s#${IMAGE_NAME}.*#${IMAGE_NAME}:${GIT_COMMIT}#g" deployment.yaml
+                            git config --globel user.email "hussamnasser38@gmail.com"
+                            git remote set-url origin http://${GITEA_TOKEN}@192.168.159.135:5555/cicd-org/solar-system-gitops.git
+                            git add .
+                            git commit -m "Update deployment.yaml"
+                            git push -u origin feature-$BUILD_ID
+                        """
+                    }
+                }   
+
+            }
+        }
     }
 
     post {
@@ -205,3 +253,7 @@ pipeline {
         }
     }
 }
+
+
+
+
