@@ -220,18 +220,28 @@ pipeline {
                         git push -u origin feature-$BUILD_ID
                     """
                 }
+                dir('kubernetes') {
+                    sh """
+                        echo "Fetching remote branches..."
+                        git fetch --all
 
-            }
+                        echo "Deleting unwanted remote branches..."
+                        for branch in \$(git branch -r | grep -v 'main' | grep -v 'feature-${BUILD_ID}' | sed 's/origin\\///'); do
+                            git push origin --delete \$branch || true
+                        done
+                    """
+                }
+            }   
         }
     }
 
     post {
         always {
             script {
-                if(fileExists('kuberbetes')){
+                if(fileExists('kubernetes')){
                     sh 'rm -rf kubernetes'
                 }
-                
+
                 if(fileExists('test-results.xml')) {
                     junit allowEmptyResults: true, testResults: 'test-results.xml'
                 }else {
