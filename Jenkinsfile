@@ -14,7 +14,7 @@ pipeline {
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner-710'
         IMAGE_NAME = 'hussam146/solar-system'
         IMAGE_TAG = "${env.GIT_COMMIT}"
-        GITEA_TOKEN = credentials('gitea-token')
+        GITEA_TOKEN = credentials('gitea-api-token')
     }
 
     stages {
