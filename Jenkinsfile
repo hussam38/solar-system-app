@@ -265,7 +265,7 @@ pipeline {
                 branch 'PR*'
             }
             steps {
-                sh """
+                sh '''
                     chmod 777 $(pwd)
                     docker run -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy zap-api-scan.py \\
                         -f openapi \\
@@ -273,7 +273,7 @@ pipeline {
                         -r zap_report.html \\
                         -J zap_report.json \\
                         -x zap_report.xml
-                """
+                '''
             }
         }
     }
