@@ -236,15 +236,14 @@ pipeline {
                         -H 'Authorization: token $GITEA_TOKEN' \\
                         -H 'Content-Type: application/json' \\
                         -d '{
-                        "assignee": "hussamnasser38@gmail.com",
-                        "assignees": [
-                            "Hussam",
-                            "hussamnasser38@gmail.com"
-                        ],
-                        "base": "main",
-                        "body": "Update docker image in deployment.yaml",
-                        "head": "feature-$BUILD_ID",
-                        "title": "Updated Docker Image"
+                            "assignee": "Hussam",
+                            "assignees": [
+                                "Hussam"
+                            ],
+                            "base": "main",
+                            "body": "Update docker image in deployment.yaml",
+                            "head": "feature-$BUILD_ID",
+                            "title": "Updated Docker Image"
                         }'
                 """
             }
