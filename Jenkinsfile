@@ -176,7 +176,6 @@ pipeline {
                 
             }
         }
-
     }
 
     post {
