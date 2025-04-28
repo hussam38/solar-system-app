@@ -207,20 +207,18 @@ pipeline {
                     }
                 }
                 
-                script {
-                    dir('kubernetes') {
-                        sh """
-                            git checkout main
-                            git checkout -b feature-$BUILD_ID
-                            sed -i "s#${IMAGE_NAME}.*#${IMAGE_NAME}:${GIT_COMMIT}#g" deployment.yaml
-                            git config --globel user.email "hussamnasser38@gmail.com"
-                            git remote set-url origin http://${GITEA_TOKEN}@192.168.159.135:5555/cicd-org/solar-system-gitops.git
-                            git add .
-                            git commit -m "Update deployment.yaml"
-                            git push -u origin feature-$BUILD_ID
-                        """
-                    }
-                }   
+                dir('kubernetes') {
+                    sh """
+                        git checkout main
+                        git checkout -b feature-$BUILD_ID
+                        sed -i "s#${IMAGE_NAME}.*#${IMAGE_NAME}:${GIT_COMMIT}#g" deployment.yaml
+                        git config --global user.email "hussamnasser38@gmail.com"
+                        git remote set-url origin http://$GITEA_TOKEN@192.168.159.135:5555/cicd-org/solar-system-gitops.git
+                        git add .
+                        git commit -m "Update deployment.yaml"
+                        git push -u origin feature-$BUILD_ID
+                    """
+                }
 
             }
         }
