@@ -221,20 +221,32 @@ pipeline {
                         git push -u origin feature-$BUILD_ID
                     """
                 }
-                dir('kubernetes') {
-                    sh """
-                        echo "Fetching remote branches..."
-                        git fetch origin
-                        git remote prune origin
-
-                        echo "Deleting unwanted remote branches..."
-                        for branch in \$(git branch -r | grep origin/ | grep -v 'main' | grep -v 'feature-${BUILD_ID}' | sed 's/origin\\///'); do
-                            echo "Deleting remote branch: \$branch"
-                            git push origin --delete \$branch || true
-                        done
-                    """
-                }
             }   
+        }
+
+        stage('Kubernetes - Raise PR'){
+            when {
+                branch 'PR*'
+            }
+            steps {
+                sh """
+                    curl -X 'POST' \
+                        'http://192.168.159.135:5555/api/v1/repos/cicd-org/solar-system-gitops/pulls' \\
+                        -H 'accept: application/json' \\
+                        -H 'Authorization: token $GITEA_TOKEN' \\
+                        -H 'Content-Type: application/json' \\
+                        -d '{
+                        "assignee": "gitea-admin",
+                        "assignees": [
+                            "gitea-admin"
+                        ],
+                        "base": "main",
+                        "body": "Update docker image in deployment.yaml",
+                        "head": "feature-$BUILD_ID",
+                        "title": "Updated Docker Image"
+                        }'
+                """
+            }
         }
     }
 
