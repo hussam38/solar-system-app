@@ -213,6 +213,7 @@ pipeline {
                         git checkout -b feature-$BUILD_ID
                         sed -i "s#${IMAGE_NAME}.*#${IMAGE_NAME}:${GIT_COMMIT}#g" deployment.yaml
                         cat deployment.yaml
+                        #####################################################################
                         git config --global user.email "hussamnasser38@gmail.com"
                         git remote set-url origin http://$GITEA_TOKEN@192.168.159.135:5555/cicd-org/solar-system-gitops.git
                         git add .
@@ -223,10 +224,12 @@ pipeline {
                 dir('kubernetes') {
                     sh """
                         echo "Fetching remote branches..."
-                        git fetch --all
+                        git fetch origin
+                        git remote prune origin
 
                         echo "Deleting unwanted remote branches..."
-                        for branch in \$(git branch -r | grep -v 'main' | grep -v 'feature-${BUILD_ID}' | sed 's/origin\\///'); do
+                        for branch in \$(git branch -r | grep origin/ | grep -v 'main' | grep -v 'feature-${BUILD_ID}' | sed 's/origin\\///'); do
+                            echo "Deleting remote branch: \$branch"
                             git push origin --delete \$branch || true
                         done
                     """
