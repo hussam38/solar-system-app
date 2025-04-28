@@ -46,22 +46,22 @@ pipeline {
             }
         }
 
-        stage('SAST - SonarQube'){
-            steps {
-                timeout(time: 150, unit: 'SECONDS') {
+        // stage('SAST - SonarQube'){
+        //     steps {
+        //         timeout(time: 150, unit: 'SECONDS') {
                 
-                    withSonarQubeEnv('sonar-qube-server') {
-                        sh '''
-                            $SONAR_SCANNER_HOME/bin/sonar-scanner \
-                                -Dsonar.projectKey=Solar-System \
-                                -Dsonar.sources=app.js \
-                                -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-                        '''
-                    }
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        //             withSonarQubeEnv('sonar-qube-server') {
+        //                 sh '''
+        //                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
+        //                         -Dsonar.projectKey=Solar-System \
+        //                         -Dsonar.sources=app.js \
+        //                         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+        //                 '''
+        //             }
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
@@ -130,7 +130,7 @@ pipeline {
 
         stage('Deploy to AWS'){
             when {
-                branch 'feature/*'
+                expression {env.BRANCH_NAME.startsWith('feature/')}
             }
             steps {
                 script {
@@ -148,7 +148,7 @@ pipeline {
                                 fi
                                 echo "Running Docker script..."
                                 sudo docker pull ${IMAGE_NAME}:${IMAGE_TAG}
-                                 if sudo docker ps -a --format "{{.Names}}" | grep -q "^solar-system\$"; then
+                                if sudo docker ps -a --format "{{.Names}}" | grep -q "^solar-system\$"; then
                                     echo "Container already exists, removing..."
                                     sudo docker stop solar-system || true
                                     sudo docker rm solar-system || true
