@@ -264,21 +264,28 @@ pipeline {
             when {
                 branch 'PR*'
             }
+            environment {
+                TARGET_URL = "http://192.168.49.2:31853/api-docs/"
+                ZAP_CONFIG = 'zap_igonore_rules.conf'
+                REPORT_DIR = "${WORKSPACE}/zap_reports"
+            }
             steps {
-                sh '''
-                    chmod 777 $(pwd)
+
+                sh "mkdir -p ${REPORT_DIR}"
+                sh """
                     docker run --rm --name zaproxy --network=host \
-                        -v $(pwd):/zap/wrk/:rw \
+                        -v ${REPORT_DIR}:/zap/wrk/:rw \
+                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/${ZAP_CONFIG}:ro \
                         ghcr.io/zaproxy/zaproxy \
                         zap-api-scan.py \
-                        -c zap_ignore_rules \
+                        -c /zap/${ZAP_CONFIG} \
                         -d \
                         -f openapi \
-                        -t http://192.168.49.2:31853/api-docs/ \
-                        -r zap_report.html \
-                        -J zap_report.json \
-                        -x zap_report.xml
-                '''
+                        -t ${TARGET_URL} \
+                        -r /zap/wrk/zap_report.html \
+                        -J /zap/wrk/zap_report.json \
+                        -x /zap/wrk/zap_report.xml
+                """
             }
         }
     }
