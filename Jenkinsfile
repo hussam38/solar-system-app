@@ -266,14 +266,13 @@ pipeline {
             }
             environment {
                 TARGET_URL = "http://192.168.49.2:31853/api-docs/"
-                ZAP_CONFIG = 'zap_ignore_rules.conf'
                 REPORT_DIR = "${WORKSPACE}/zap_reports"
             }
             steps {
                 sh """
                     docker run --rm --name zaproxy --network=host \
                         ghcr.io/zaproxy/zaproxy:latest zap-api-scan.py \
-                        -v ${REPORT_DIR}:/zap/wrk/:rw \                    
+                        -v ${REPORT_DIR}:/zap/wrk/:rw \
                         -c zap_ignore_rules.conf \
                         -d \
                         -f openapi \
@@ -315,7 +314,6 @@ pipeline {
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'zap_reports/', reportFiles: 'zap_report.html', reportName: 'DAST - OWASP ZAP Report', reportTitles: '', useWrapperFileDirectly: true])
-
         }
     }
 }
