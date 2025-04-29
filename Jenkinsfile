@@ -271,13 +271,13 @@ pipeline {
                         -v $(pwd):/zap/wrk/:rw \
                         ghcr.io/zaproxy/zaproxy \
                         zap-api-scan.py \
+                        -c zap_ignore_rules
                         -d \
                         -f openapi \
                         -t http://192.168.49.2:31853/api-docs/ \
                         -r zap_report.html \
                         -J zap_report.json \
-                        -x zap_report.xml \
-                        -c zap_ignore_rules
+                        -x zap_report.xml
                 '''
             }
         }
