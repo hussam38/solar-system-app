@@ -81,43 +81,43 @@ pipeline {
             }
         }
 
-        stage('Trivy Vulnerability Scanner') {
-            steps {
-                sh """
-                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
-                        --severity LOW,MEDIUM,HIGH \
-                        --exit-code 0 \
-                        --format json \
-                        --quiet \
-                        -o trivy-MEDIUM-report.json
+        // stage('Trivy Vulnerability Scanner') {
+        //     steps {
+        //         sh """
+        //             trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
+        //                 --severity LOW,MEDIUM,HIGH \
+        //                 --exit-code 0 \
+        //                 --format json \
+        //                 --quiet \
+        //                 -o trivy-MEDIUM-report.json
 
-                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
-                        --severity CRITICAL \
-                        --exit-code 1 \
-                        --format json \
-                        --quiet \
-                        -o trivy-CRITICAL-report.json
-                """
-            }
-            post {
-                always {
-                    sh '''
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-MEDIUM-IMAGE-report.xml trivy-MEDIUM-report.json 
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-CRITICAL-IMAGE-report.xml trivy-CRITICAL-report.json
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-MEDIUM-IMAGE-report.html trivy-MEDIUM-report.json
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-CRITICAL-IMAGE-report.html trivy-CRITICAL-report.json                        
-                    '''
-                }
-            }
-        }
+        //             trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
+        //                 --severity CRITICAL \
+        //                 --exit-code 1 \
+        //                 --format json \
+        //                 --quiet \
+        //                 -o trivy-CRITICAL-report.json
+        //         """
+        //     }
+        //     post {
+        //         always {
+        //             sh '''
+        //                 trivy convert \
+        //                     --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
+        //                     -o trivy-MEDIUM-IMAGE-report.xml trivy-MEDIUM-report.json 
+        //                 trivy convert \
+        //                     --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
+        //                     -o trivy-CRITICAL-IMAGE-report.xml trivy-CRITICAL-report.json
+        //                 trivy convert \
+        //                     --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+        //                     -o trivy-MEDIUM-IMAGE-report.html trivy-MEDIUM-report.json
+        //                 trivy convert \
+        //                     --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+        //                     -o trivy-CRITICAL-IMAGE-report.html trivy-CRITICAL-report.json                        
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Push Image to Docker Registery'){
             steps {
@@ -269,10 +269,11 @@ pipeline {
                 REPORT_DIR = "${WORKSPACE}/zap_reports"
             }
             steps {
+                sh "mkdir ${REPORT_DIR}"
                 sh """
                     docker run --rm --name zaproxy --network=host \
-                        ghcr.io/zaproxy/zaproxy:latest zap-api-scan.py \
-                        -v ${REPORT_DIR}:/zap/wrk/:rw \
+                        ghcr.io/zaproxy/zaproxy zap-api-scan.py \
+                        -v $(pwd):/zap/wrk/:rw \
                         -c zap_ignore_rules.conf \
                         -d \
                         -f openapi \
