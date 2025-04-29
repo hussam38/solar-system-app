@@ -275,10 +275,10 @@ pipeline {
                 sh """
                     docker run --rm --name zaproxy --network=host \
                         -v ${REPORT_DIR}:/zap/wrk/:rw \
-                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/wrk/zap_config.conf:ro \
+                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/zap_config.conf:ro \
                         ghcr.io/zaproxy/zaproxy:latest \
                         zap-api-scan.py \
-                        -c /zap/wrk/zap_config.conf \
+                        -c /zap/zap_config.conf \
                         -d \
                         -f openapi \
                         -t ${TARGET_URL} \
