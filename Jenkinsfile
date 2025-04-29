@@ -267,7 +267,8 @@ pipeline {
             steps {
                 sh '''
                     chmod 777 $(pwd)
-                    docker run --rm --name zaproxy -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy zap-api-scan.py \\
+                    docker run --rm --name zaproxy -v $(pwd):/zap/wrk/:rw --entrypoint /zap/zap-api-scan.py \\
+                        ghcr.io/zaproxy/zaproxy \\
                         -f openapi \\
                         -t http://192.168.49.2:31853/api-docs \\
                         -r zap_report.html \\
