@@ -266,7 +266,7 @@ pipeline {
             }
             environment {
                 TARGET_URL = "http://192.168.49.2:31853/api-docs/"
-                ZAP_CONFIG = 'zap_igonore_rules.conf'
+                ZAP_CONFIG = 'zap_ignore_rules.conf'
                 REPORT_DIR = "${WORKSPACE}/zap_reports"
             }
             steps {
@@ -275,10 +275,10 @@ pipeline {
                 sh """
                     docker run --rm --name zaproxy --network=host \
                         -v ${REPORT_DIR}:/zap/wrk/:rw \
-                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/${ZAP_CONFIG}:ro \
-                        ghcr.io/zaproxy/zaproxy \
+                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/wrk/zap_config.conf:ro \
+                        ghcr.io/zaproxy/zaproxy:latest \
                         zap-api-scan.py \
-                        -c /zap/${ZAP_CONFIG} \
+                        -c /zap/wrk/zap_config.conf \
                         -d \
                         -f openapi \
                         -t ${TARGET_URL} \
@@ -318,7 +318,7 @@ pipeline {
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-IMAGE-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'zap_report.html', reportName: 'DAST - OWASP ZAP Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'zap_reports/', reportFiles: 'zap_report.html', reportName: 'DAST - OWASP ZAP Report', reportTitles: '', useWrapperFileDirectly: true])
 
         }
     }
