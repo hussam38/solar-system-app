@@ -273,8 +273,8 @@ pipeline {
 
                 sh """
                     docker run --rm --name zaproxy --network=host \
-                        ghcr.io/zaproxy/zaproxy zap-api-scan.py \
                         -v \$(pwd):/zap/wrk/:rw \
+                        ghcr.io/zaproxy/zaproxy zap-api-scan.py \
                         -c zap_ignore_rules.conf \
                         -d \
                         -f openapi \
