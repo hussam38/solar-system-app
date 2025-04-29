@@ -270,6 +270,7 @@ pipeline {
             }
             steps {
                 sh "mkdir ${REPORT_DIR}"
+                
                 sh """
                     docker run --rm --name zaproxy --network=host \
                         ghcr.io/zaproxy/zaproxy zap-api-scan.py \
