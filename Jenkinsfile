@@ -270,21 +270,17 @@ pipeline {
                 REPORT_DIR = "${WORKSPACE}/zap_reports"
             }
             steps {
-
-                sh "mkdir -p ${REPORT_DIR}"
                 sh """
                     docker run --rm --name zaproxy --network=host \
-                        -v ${REPORT_DIR}:/zap/wrk/:rw \
-                        -v ${WORKSPACE}/${ZAP_CONFIG}:/zap/zap_config.conf:ro \
-                        ghcr.io/zaproxy/zaproxy:latest \
-                        zap-api-scan.py \
-                        -c /zap/zap_config.conf \
+                        ghcr.io/zaproxy/zaproxy:latest zap-api-scan.py \
+                        -v ${REPORT_DIR}:/zap/wrk/:rw \                    
+                        -c zap_ignore_rules.conf \
                         -d \
                         -f openapi \
                         -t ${TARGET_URL} \
-                        -r /zap/wrk/zap_report.html \
-                        -J /zap/wrk/zap_report.json \
-                        -x /zap/wrk/zap_report.xml
+                        -r ${REPORT_DIR}/zap_report.html \
+                        -J ${REPORT_DIR}/zap_report.json \
+                        -x ${REPORT_DIR}/zap_report.xml
                 """
             }
         }
