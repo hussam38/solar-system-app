@@ -264,11 +264,7 @@ pipeline {
             when {
                 branch 'PR*'
             }
-            environment {
-                TARGET_URL = "http://192.168.49.2:31853/api-docs/"
-            }
             steps {
-                sh "mkdir -p ${REPORT_DIR}"
                 sh '''
                     docker run --rm --name zaproxy --network=host \
                         -v $(pwd):/zap/wrk/:rw \
