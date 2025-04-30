@@ -4,6 +4,7 @@ pipeline {
     tools {
         nodejs 'NodeJs-23-9-0'
     }
+    
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.iff7ofz.mongodb.net/planets?retryWrites=true&w=majority'
         MONGO_USERNAME = credentials('mongo-db-username')
@@ -15,6 +16,7 @@ pipeline {
         IMAGE_NAME = 'hussam146/solar-system'
         IMAGE_TAG = "${env.GIT_COMMIT}"    
     }
+
     stages {
         stage('Install Dependencies') {
             steps {
