@@ -19,10 +19,6 @@ pipeline {
     
 
     stages {
-        stage('Checkut SCM') {
-            
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'npm install --no-audit'
