@@ -16,8 +16,13 @@ pipeline {
         IMAGE_TAG = "${env.GIT_COMMIT}"
         GITEA_TOKEN = credentials('gitea-api-token')
     }
+    
 
     stages {
+        stage('Checkut SCM') {
+            
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install --no-audit'
@@ -269,12 +274,11 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cp zap_ignore_rules $WORKSPACE/'
                     sh """
                         docker run --rm --name zaproxy --network=host \
                             -v ${WORKSPACE}:/zap/wrk/:rw \
                             ghcr.io/zaproxy/zaproxy zap-api-scan.py \
-                            -c ${WORKSPACE}/zap_ignore_rules \
+                            -c zap_ignore_rules \
                             -d \
                             -f openapi \
                             -t http://192.168.49.2:31853/api-docs/ \
