@@ -10,11 +10,11 @@ pipeline {
         MONGO_USERNAME = credentials('mongo-db-username')
         MONGO_PASSWD = credentials('mongo-db-passwd')
         EC2_HOST = credentials('ec2-host')
+        GITEA_TOKEN = credentials('gitea-api-token')
         SSH_USER = 'ubuntu'
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner-710'
         IMAGE_NAME = 'hussam146/solar-system'
-        IMAGE_TAG = "${env.GIT_COMMIT}"
-        GITEA_TOKEN = credentials('gitea-api-token')
+        IMAGE_TAG = "${env.GIT_COMMIT}"    
     }
     
 
