@@ -256,7 +256,7 @@ pipeline {
             }
             steps {
                 timeout(time: 1, unit: 'DAYS') {
-                    input message: 'Is the app deployed and synced successfully?' , ok: 'Yes'
+                    input message: 'Is the app deployed and ArgoCD synced successfully?' , ok: 'Yes, App deployed and synced'
                 }
             }
         }
