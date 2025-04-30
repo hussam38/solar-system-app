@@ -16,7 +16,6 @@ pipeline {
         IMAGE_NAME = 'hussam146/solar-system'
         IMAGE_TAG = "${env.GIT_COMMIT}"    
     }
-    
 
     stages {
         stage('Install Dependencies') {
