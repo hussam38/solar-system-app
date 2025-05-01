@@ -47,21 +47,24 @@ pipeline {
             }
         }
 
-        // stage('SAST - SonarQube'){
-        //     steps {
-        //         timeout(time: 150, unit: 'SECONDS') {             
-        //             withSonarQubeEnv('sonar-qube-server') {
-        //                 sh '''
-        //                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
-        //                         -Dsonar.projectKey=Solar-System \
-        //                         -Dsonar.sources=app.js \
-        //                         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-        //                 '''
-        //             }
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('SAST - SonarQube'){
+            when {
+                branch 'feature/*'
+            }
+            steps {
+                timeout(time: 150, unit: 'SECONDS') {             
+                    withSonarQubeEnv('sonar-qube-server') {
+                        sh '''
+                            $SONAR_SCANNER_HOME/bin/sonar-scanner \
+                                -Dsonar.projectKey=Solar-System \
+                                -Dsonar.sources=app.js \
+                                -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+                        '''
+                    }
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             when {
@@ -325,7 +328,7 @@ pipeline {
                     sh '''
                         aws lambda update-function-code \
                             --function-name solar-system-func \
-                            --s3-bucker cicd-solar-bucket \
+                            --s3-bucket cicd-solar-bucket \
                             --s3-key solar-system-lambda-$BUILD_ID.zip
                     '''
                 }
