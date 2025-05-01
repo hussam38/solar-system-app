@@ -325,6 +325,12 @@ pipeline {
             }
             steps {
                 withAWS(credentials: 'aws-crds', region: 'eu-north-1') {
+                    sh """""
+                        aws lambda update-function-configuration \
+                            --function-name solar-system-func \
+                            --environment "Variables={MONGO_URI=$MONGO_URI,MONGO_USERNAME=$MONGO_USERNAME,MONGO_PASSWD=$MONGO_PASSWD}"
+                    """""
+                    
                     sh '''
                         aws lambda update-function-code \
                             --function-name solar-system-func \
