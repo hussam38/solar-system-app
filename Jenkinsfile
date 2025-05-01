@@ -183,7 +183,7 @@ pipeline {
             }
             steps {
                 script {
-                    git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
+                    git branch: 'main', url: 'http://localhost:5555/cicd-org/solar-system-gitops'
                     dir('kubernetes') {
                         sh '''
                             git checkout main
@@ -192,7 +192,7 @@ pipeline {
                             cat deployment.yaml
                             #####################################################################
                             git config --global user.email "hussamnasser38@gmail.com"
-                            git remote set-url origin http://$GITEA_TOKEN@192.168.159.135:5555/cicd-org/solar-system-gitops.git
+                            git remote set-url origin http://$GITEA_TOKEN@192.168.159.135:5555/cicd-org/solar-system-gitops
                             git add .
                             git commit -m "Update deployment.yaml $BUILD_ID"
                             git push -u origin feature-$BUILD_ID
