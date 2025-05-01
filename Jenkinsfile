@@ -278,12 +278,22 @@ pipeline {
             }
             steps {
                 withAWS(credentials: 'aws-crds', region: 'eu-north-1') {
-                    sh """
+                    sh ''' 
+                        echo "Before:"
                         tail -6 app.js
-                        sed -i '/app\.listen/,/^});/ s/^/\/\//' app.js
-                        sed -i 's/^module\.exports = app/\/\/&/' app.js
-                        sed -i 's/^\/\/\(module\.exports\.handler = serverless(app)\)/\1/' app.js
-                    """
+
+                        # Comment app.listen block
+                        sed -i '/app\\.listen/,/^});/ s/^/\\/\\//' app.js
+
+                        # Comment "module.exports = app"
+                        sed -i 's/^module\\.exports = app/\\/\\/&/' app.js
+
+                        # Uncomment "module.exports.handler = serverless(app)"
+                        sed -i 's/^\\/\\/(module\\.exports\\.handler = serverless(app))/\\1/' app.js
+
+                        echo "After:"
+                        tail -6 app.js
+                    '''
 
                     sh '''
                         zip -qr solar-system-lambda-$BUILD_ID.zip app* node* package* index.html
