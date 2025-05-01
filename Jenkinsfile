@@ -183,15 +183,7 @@ pipeline {
             }
             steps {
                 script {
-                    if (!fileExists('kubernetes')){
-                        echo "Directory exists, proceeding with git operations."
-                        dir('kubernetes') {
-                            git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
-
-                        }
-                    }
-                }
-                script {
+                    git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
                     dir('kubernetes') {
                         sh '''
                             git checkout main
