@@ -283,13 +283,13 @@ pipeline {
                         tail -n 6 app.js
 
                         # Comment out the app.listen block
-                        sed -i '/^app\\.listen(4000/ s/^/\\/\\//' app.js
+                        sed -i "/^app\\.listen(4000/ s/^/\\/\\//" app.js
 
                         # Comment out the original module.exports line
-                        sed -i 's/^module\.exports = app/\/\/&/' app.js
+                        sed -i "s/^module.exports = app;/\\/\\/module.exports = app;/g" app.js
 
                         # Uncomment the serverless handler export if it was previously commented
-                        sed -i 's/^\/\/\(module\.exports\.handler = serverless(app)\)/\1/' app.js
+                        sed -i "s|^//module.exports.handler|module.exports.handler|" app.js
 
                         echo "After:"
                         tail -n 6 app.js
