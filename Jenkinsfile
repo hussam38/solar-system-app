@@ -49,8 +49,7 @@ pipeline {
 
         // stage('SAST - SonarQube'){
         //     steps {
-        //         timeout(time: 150, unit: 'SECONDS') {
-                
+        //         timeout(time: 150, unit: 'SECONDS') {             
         //             withSonarQubeEnv('sonar-qube-server') {
         //                 sh '''
         //                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
@@ -268,6 +267,56 @@ pipeline {
                             -r zap_report.html \
                             -J zap_report.json \
                             -x zap_report.xml
+                    '''
+                }
+            }
+        }
+
+        stage('S3 - Upload') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withAWS(credentials: 'aws-crds', region: 'eu-north-1') {
+                    sh '''
+                        tail -6 app.js
+                        sed -i '/app\.listen/,/^});/ s/^/\/\//' app.js
+                        sed -i 's/^module\.exports = app/\/\/&/' app.js
+                        sed -i 's/^\/\/\(module\.exports\.handler = serverless(app)\)/\1/' app.js
+                    '''
+
+                    sh '''
+                        zip -qr solar-system-lambda-$BUILD_ID.zip app* node* package* index.html
+                    '''
+                    s3Upload(
+                        bucket: 'cicd-solar-bucket',
+                        file: "solar-system-lambda-${BUILD_ID}.zip")
+                }
+            }
+        }
+
+        stage('Deploy To Production?'){
+            when {
+                branch 'main'
+            }
+            steps {
+                timeout(time: 1, unit: 'DAYS') {
+                    input message: 'Are you Sure that you want to deploy your app' , ok: 'Yes'
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withAWS(credentials: 'aws-crds', region: 'eu-north-1') {
+                    sh '''
+                        aws lambda update-function-code \
+                            --function-name solar-system-func \
+                            --s3-bucker cicd-solar-bucket \
+                            --s3-key solar-system-lambda-$BUILD_ID.zip
                     '''
                 }
             }

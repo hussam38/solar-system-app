@@ -16,7 +16,7 @@ async function connectToMongo() {
     await mongoose.connect(process.env.MONGO_URI, {
       user: process.env.MONGO_USERNAME,
       pass: process.env.MONGO_PASSWD,
-     });
+    });
     console.log("MongoDB Atlas Connection Successful");
   } catch (err) {
     console.log("MongoDB Atlas Connection Error:", err);
@@ -24,7 +24,6 @@ async function connectToMongo() {
 }
 
 connectToMongo();
-
 
 var Schema = mongoose.Schema;
 
@@ -38,30 +37,27 @@ var dataSchema = new Schema({
 });
 var planetModel = mongoose.model("planets", dataSchema);
 
-
 app.post("/planet", async function (req, res) {
   const { id } = req.body;
 
   // Validate id in request body (ensure it is a valid number)
   if (!id || isNaN(id)) {
-      return res.status(400).send({ message: "Invalid planet ID" });
+    return res.status(400).send({ message: "Invalid planet ID" });
   }
 
   try {
-      const planetData = await planetModel.findOne({ id });
+    const planetData = await planetModel.findOne({ id });
 
-      if (!planetData) {
-          return res.status(404).send({ message: "Planet not found" });
-      }
+    if (!planetData) {
+      return res.status(404).send({ message: "Planet not found" });
+    }
 
-      res.send(planetData);
+    res.send(planetData);
   } catch (err) {
-      console.error("Error in Planet Data:", err);
-      res.status(500).send({ message: "Error fetching planet data" });
+    console.error("Error in Planet Data:", err);
+    res.status(500).send({ message: "Error fetching planet data" });
   }
 });
-
-
 
 app.get("/", async (req, res) => {
   res.sendFile(path.join(__dirname, "/", "index.html"));
@@ -100,8 +96,8 @@ app.get("/ready", function (req, res) {
   });
 });
 
-app.listen(4000,'0.0.0.0', () => {
-  console.log("Server successfully running on port - " + 4000);
+app.listen(4000, "0.0.0.0", () => {
+ console.log("Server successfully running on port - " + 4000);
 });
 module.exports = app;
 
