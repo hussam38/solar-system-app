@@ -265,23 +265,21 @@ pipeline {
             when {
                 branch 'PR*'
             }
-            environment {
-                WORKSPACE = "${env.WORKSPACE}"
-            }
             steps {
                 script {
-                    sh """
+                    sh '''
+                        chmod 777 $(pwd) 
                         docker run --rm --name zaproxy --network=host \
-                            -v ${WORKSPACE}:/zap/wrk/:rw \
+                            -v $(pwd):/zap/wrk/:rw \
                             ghcr.io/zaproxy/zaproxy zap-api-scan.py \
-                            -c ${WORKSPACE}/zap_ignore_rules \
+                            -c zap_ignore_rules \
                             -d \
                             -f openapi \
                             -t http://192.168.49.2:31853/api-docs/ \
                             -r zap_report.html \
                             -J zap_report.json \
                             -x zap_report.xml
-                    """
+                    '''
                 }
             }
         }
