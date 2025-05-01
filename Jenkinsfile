@@ -283,7 +283,7 @@ pipeline {
                         tail -6 app.js
 
                         # Comment app.listen block
-                        sed -i '/app\\.listen/,/^});/ s/^/\\/\\//' app.js
+                        sed -i '/app\.listen(4000, "0.0.0.0", () => {/,/});/ s/^/\/\//' app.js
 
                         # Comment "module.exports = app"
                         sed -i 's/^module\\.exports = app/\\/\\/&/' app.js
