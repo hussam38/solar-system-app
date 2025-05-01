@@ -183,27 +183,12 @@ pipeline {
             }
             steps {
                 script {
-                    if (fileExists('kubernetes')){
+                    if (!fileExists('kubernetes')){
                         echo "Directory exists, proceeding with git operations."
                         dir('kubernetes') {
-                            try {
-                                sh 'git pull origin main'
-                                echo "Git pull successful."
-                            }catch(err){
-                                echo "Pull failed. ${err}"
-                                echo "Deleting 'kubernetes' folder and recloning..."
-                                dir('..'){
-                                    dir('kubernetes'){
-                                        deleteDir()
-                                        echo "Directory deleted."
-                                    }
-                                }
-                                git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
-                            }
+                            git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
+
                         }
-                    }else{
-                        echo "Directory not found. Cloning repository..."
-                        git branch: 'main', credentialsId: 'gitea-crds', url: 'http://localhost:5555/cicd-org/solar-system-gitops.git'
                     }
                 }
                 script {
