@@ -282,14 +282,11 @@ pipeline {
                         echo "Before:"
                         tail -6 app.js
 
-                        # Comment app.listen block
                         sed -i '/app\.listen(4000, "0.0.0.0", () => {/,/});/ s/^/\/\//' app.js
 
-                        # Comment "module.exports = app"
-                        sed -i 's/^module\\.exports = app/\\/\\/&/' app.js
+                        sed -i 's/^module\.exports = app/\/\/&/' app.js
 
-                        # Uncomment "module.exports.handler = serverless(app)"
-                        sed -i 's/^\\/\\/(module\\.exports\\.handler = serverless(app))/\\1/' app.js
+                        sed -i 's/^\/\/\(module\.exports\.handler = serverless(app)\)/\1/' app.js
 
                         echo "After:"
                         tail -6 app.js
