@@ -183,8 +183,8 @@ pipeline {
             }
             steps {
                 script {
-                    git branch: 'main', url: 'http://localhost:5555/cicd-org/solar-system-gitops'
-                    dir('kubernetes') {
+                    sh 'git clone -b main http://localhost:5555/cicd-org/solar-system-gitops'
+                    dir('solar-system-gitops/kubernetes') {
                         sh '''
                             git checkout main
                             git checkout -b feature-$BUILD_ID
