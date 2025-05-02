@@ -1,4 +1,4 @@
-@Library('shared-libraries') _
+@Library('shared-libraries@feature/trivy') _
 
 pipeline {
     agent any
@@ -70,7 +70,11 @@ pipeline {
 
         stage('Build Docker Image') {
             when {
-                branch 'feature/*'
+                anyOf{
+                    expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                    branch 'main'
+
+                }
             }
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
@@ -79,7 +83,11 @@ pipeline {
 
         stage('Cleaning Old Images'){
             when {
-                branch 'feature/*'
+                anyOf{
+                    expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                    branch 'main'
+
+                }
             }
             steps {
                 sh """
@@ -93,41 +101,24 @@ pipeline {
 
         stage('Trivy Vulnerability Scanner') {
             when {
-                branch 'feature/*'
+                anyOf{
+                    expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                    branch 'main'
+                }
             }
             steps {
-                sh """
-                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
-                        --severity LOW,MEDIUM,HIGH \
-                        --exit-code 0 \
-                        --format json \
-                        --quiet \
-                        -o trivy-MEDIUM-report.json
-
-                    trivy image ${IMAGE_NAME}:${IMAGE_TAG} \
-                        --severity CRITICAL \
-                        --exit-code 1 \
-                        --format json \
-                        --quiet \
-                        -o trivy-CRITICAL-report.json
-                """
+                script {
+                   trivyScanScript.vulnerability(imageName: "${IMAGE_NAME}", imageTag: "${IMAGE_TAG}", severity: "LOW", exitCode: "0") 
+                   trivyScanScript.vulnerability(imageName: "${IMAGE_NAME}", imageTag: "${IMAGE_TAG}", severity: "MEDIUM", exitCode: "0") 
+                   trivyScanScript.vulnerability(imageName: "${IMAGE_NAME}", imageTag: "${IMAGE_TAG}", severity: "HIGH", exitCode: "0") 
+                   trivyScanScript.vulnerability(imageName: "${IMAGE_NAME}", imageTag: "${IMAGE_TAG}", severity: "CRITICAL", exitCode: "1") 
+                }
             }
             post {
                 always {
-                    sh '''
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-MEDIUM-IMAGE-report.xml trivy-MEDIUM-report.json 
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            -o trivy-CRITICAL-IMAGE-report.xml trivy-CRITICAL-report.json
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-MEDIUM-IMAGE-report.html trivy-MEDIUM-report.json
-                        trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
-                            -o trivy-CRITICAL-IMAGE-report.html trivy-CRITICAL-report.json                        
-                    '''
+                    script {
+                        trivyScanScript.reportsConverter()
+                    }
                     publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-IMAGE-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                     publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
