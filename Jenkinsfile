@@ -348,7 +348,7 @@ pipeline {
 
     post {
         always {
-            slackNotification()
+            slackNotification(ch: 'jenkins', buildStatus: "${currentBuild.result}", domain: 'Cyna', token: 'jenkins-slack-token')
             // script {
             //     if(fileExists('kubernetes')){
             //         sh 'rm -rf kubernetes'
