@@ -350,7 +350,7 @@ pipeline {
         always {
             script {
                 def status = currentBuild.result ?: 'SUCCESS'
-                slackNotification(ch: 'jenkins', buildStatus: status, domain: 'Cyna', token: 'jenkins-slack-token')
+                slackNotification('jenkins',status,'Cyna','jenkins-slack-token')
             }
             
             // script {
