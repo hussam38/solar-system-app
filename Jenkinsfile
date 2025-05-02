@@ -1,3 +1,5 @@
+@Library('shared-libraries') _
+
 pipeline {
     agent any
 
@@ -346,7 +348,7 @@ pipeline {
 
     post {
         always {
-            slackSend channel: 'jenkins', message: 'Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)'
+            slackNotification
             // script {
             //     if(fileExists('kubernetes')){
             //         sh 'rm -rf kubernetes'
