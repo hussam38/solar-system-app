@@ -348,7 +348,7 @@ pipeline {
 
     post {
         always {
-            slackNotification
+            slackNotification()
             // script {
             //     if(fileExists('kubernetes')){
             //         sh 'rm -rf kubernetes'
