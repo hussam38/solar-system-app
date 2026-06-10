@@ -106,7 +106,7 @@ The `Jenkinsfile` in this repo defines a multi-stage pipeline. Important stages 
 - Update Kubernetes & Raise PR: on `PR*` branches the pipeline clones the GitOps repo, updates `deployment.yaml`, commits a new branch, and opens a Gitea PR
 - Manual approval: an `input` step waits for deployment confirmation before running DAST (OWASP ZAP)
 
-### Shared Library
+### [Shared Library](../../../jenkins-sharedLib-for-solar-system-app)  <-- Repo Link
 
 The pipeline begins with:
 
