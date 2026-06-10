@@ -111,7 +111,7 @@ The `Jenkinsfile` in this repo defines a multi-stage pipeline. Important stages 
 The pipeline begins with:
 
 ```groovy
-@Library('shared-libraries@feature/trivy') _
+@Library('shared-libraries@main') _
 ```
 
 This imports reusable Trivy helper scripts (`trivyScanScript`) for vulnerability scanning and report conversion. Keep the shared library in sync with your Jenkins master to ensure scanning behavior matches expectations.
