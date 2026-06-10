@@ -1,4 +1,4 @@
-@Library('shared-libraries@feature/trivy') _
+@Library('shared-libraries@main') _
 
 pipeline {
     agent any
