@@ -344,30 +344,30 @@ pipeline {
                 slackNotification('jenkins',status,'Cyna','jenkins-slack-token')
             }
             
-            // script {
-            //     if(fileExists('kubernetes')){
-            //         sh 'rm -rf kubernetes'
-            //     }
-            //     if(fileExists('test-results.xml')) {
-            //         junit allowEmptyResults: true, testResults: 'test-results.xml'
-            //     }else {
-            //         echo "No test-results.xml found, skipping."
-            //     }
-            //     if(fileExists('trivy-MEDIUM-IMAGE-report.xml')) {
-            //         junit allowEmptyResults: true, testResults: 'trivy-MEDIUM-IMAGE-report.xml'
-            //     }else {
-            //         echo "No trivy-MEDIUM-IMAGE-report.xml found, skipping."
-            //     }
-            //     if(fileExists('trivy-CRITICAL-IMAGE-report.xml')) {
-            //         junit allowEmptyResults: true, testResults: 'trivy-CRITICAL-IMAGE-report.xml'
-            //     }else {
-            //         echo "No trivy-CRITICAL-IMAGE-report.xml found, skipping."
-            //     }
-            // }   
-            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-IMAGE-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'zap_reports/', reportFiles: 'zap_report.html', reportName: 'DAST - OWASP ZAP Report', reportTitles: '', useWrapperFileDirectly: true])
+            script {
+                if(fileExists('kubernetes')){
+                    sh 'rm -rf kubernetes'
+                }
+                if(fileExists('test-results.xml')) {
+                    junit allowEmptyResults: true, testResults: 'test-results.xml'
+                }else {
+                    echo "No test-results.xml found, skipping."
+                }
+                if(fileExists('trivy-MEDIUM-IMAGE-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-MEDIUM-IMAGE-report.xml'
+                }else {
+                    echo "No trivy-MEDIUM-IMAGE-report.xml found, skipping."
+                }
+                if(fileExists('trivy-CRITICAL-IMAGE-report.xml')) {
+                    junit allowEmptyResults: true, testResults: 'trivy-CRITICAL-IMAGE-report.xml'
+                }else {
+                    echo "No trivy-CRITICAL-IMAGE-report.xml found, skipping."
+                }
+            }   
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-CRITICAL-IMAGE-report.html', reportName: 'Trivy Image Critical HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-MEDIUM-IMAGE-report.html', reportName: 'Trivy Image MEDIUM HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'zap_reports/', reportFiles: 'zap_report.html', reportName: 'DAST - OWASP ZAP Report', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
 }
