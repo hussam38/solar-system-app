@@ -14,7 +14,7 @@ This repository contains a small Node.js application and a Jenkins CI/CD pipelin
 - deploys to AWS EC2 for `feature/*` branches
 - updates a Kubernetes GitOps repo and raises a Gitea PR for `PR*` branches
 
-The Jenkins pipeline also uses a shared library called `shared-libraries@feature/trivy` for Trivy scanning.
+The Jenkins pipeline also uses a shared library called `shared-libraries@main` for Trivy scanning.
 
 ---
 
