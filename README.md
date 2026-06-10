@@ -100,7 +100,7 @@ The `Jenkinsfile` in this repo defines a multi-stage pipeline. Important stages 
 - SAST (SonarQube): runs for `feature/*` branches using `sonar-scanner` and coverage report path
 - Build Docker Image: runs on `feature/*` and `main`, image is tagged with `GIT_COMMIT`
 - Cleaning Old Images: removes older tags for the same repository
-- Trivy Vulnerability Scanner: invoked via the shared library `shared-libraries@feature/trivy`; configured to fail the build on `CRITICAL` severity
+- Trivy Vulnerability Scanner: invoked via the shared library `shared-libraries@main`; configured to fail the build on `CRITICAL` severity
 - Push Image to Registry: for `feature/*` branches using `docker-crds` credentials
 - Deploy to AWS: SSH into EC2 and run the container (exposed at port `4000`)
 - Update Kubernetes & Raise PR: on `PR*` branches the pipeline clones the GitOps repo, updates `deployment.yaml`, commits a new branch, and opens a Gitea PR
